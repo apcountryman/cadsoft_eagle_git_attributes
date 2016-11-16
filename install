@@ -23,14 +23,21 @@ function display_help {
     echo
     echo "SYNOPSIS"
     echo "    install --help"
+    echo "    install --version"
     echo
     echo "OPTIONS"
     echo "    --help"
     echo "        Display this help."
+    echo "    --version"
+    echo "        Display version."
     echo
     echo "EXAMPLES"
     echo "    install --help"
+    echo "    install --version"
 }
+
+# script version
+VERSION="0.0.0"
 
 # verify there are arguments
 if [[ $# -eq 0 ]]; then
@@ -47,6 +54,11 @@ while [[ $# -gt 0 ]]; do
     case $option in
         --help)
             display_help
+            exit 0
+
+        ;;
+        --version)
+            echo "initialize: version $VERSION"
             exit 0
 
         ;;
