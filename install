@@ -24,20 +24,31 @@ function display_help {
     echo "SYNOPSIS"
     echo "    install --help"
     echo "    install --version"
+    echo "    install --global"
     echo
     echo "OPTIONS"
     echo "    --help"
     echo "        Display this help."
     echo "    --version"
     echo "        Display version."
+    echo "    --global"
+    echo "        Write the attributes to the global git configuration file."
     echo
     echo "EXAMPLES"
     echo "    install --help"
     echo "    install --version"
+    echo "    install --global"
 }
 
 # script version
 VERSION="0.0.0"
+
+# project clean filter
+FILTER_PROJECT_CLEAN=\
+'sed'\
+' -e '"'"'/^\[Eagle\]\|^\[Globals\]/,/^\s*$/!d'"'"\
+' -e '"'"'/^\[Eagle\]/,/^\s*$/{/^\[Eagle\]\|^Version=\|^Globals=\|^\s*$/!d;}'"'"\
+' -e '"'"'/^\[Globals\]/,/^\s*$/{/^\s*$/d;}'"'"
 
 # verify there are arguments
 if [[ $# -eq 0 ]]; then
@@ -62,6 +73,10 @@ while [[ $# -gt 0 ]]; do
             exit 0
 
         ;;
+        --global)
+            GLOBAL=true
+
+        ;;
         --*|-)
             ( >&2 echo "install: unrecognized option '$option', aborting" )
             exit 1
@@ -73,5 +88,24 @@ while [[ $# -gt 0 ]]; do
     shift
 
 done
+
+if [[ -z $GLOBAL ]]; then
+    ( >&2 echo "install: attributes scope not specified, aborting" )
+    exit 1
+
+fi
+
+if [[ "$GLOBAL" == true ]]; then
+    SCOPE="--global"
+
+fi
+
+# install the project filter
+git config "$SCOPE" filter.cadsoft_eagle_project.clean "$FILTER_PROJECT_CLEAN"
+
+if [[ $? != 0 ]]; then
+    exit 1
+
+fi
 
 exit 0
