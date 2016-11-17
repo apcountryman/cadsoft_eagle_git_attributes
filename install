@@ -24,7 +24,7 @@ function display_help {
     echo "SYNOPSIS"
     echo "    install --help"
     echo "    install --version"
-    echo "    install --global"
+    echo "    install (--global|--local <path>)"
     echo
     echo "OPTIONS"
     echo "    --help"
@@ -33,6 +33,9 @@ function display_help {
     echo "        Display version."
     echo "    --global"
     echo "        Write the attributes to the global git configuration file."
+    echo "    --local"
+    echo "        Write the attributes to the specified git repository's configuration"
+    echo "        file."
     echo
     echo "EXAMPLES"
     echo "    install --help"
@@ -77,6 +80,14 @@ while [[ $# -gt 0 ]]; do
             GLOBAL=true
 
         ;;
+        --local)
+            LOCAL=true
+            REPOSITORY_DIR=$( readlink -f "$2" )
+            INITIAL_DIR=$( pwd )
+
+            shift
+
+        ;;
         --*|-)
             ( >&2 echo "install: unrecognized option '$option', aborting" )
             exit 1
@@ -89,22 +100,47 @@ while [[ $# -gt 0 ]]; do
 
 done
 
-if [[ -z $GLOBAL ]]; then
+# verify the attributes scope was specified
+if [[ -z $GLOBAL && -z $LOCAL ]]; then
     ( >&2 echo "install: attributes scope not specified, aborting" )
     exit 1
 
 fi
 
+# configure for global installation
 if [[ "$GLOBAL" == true ]]; then
     SCOPE="--global"
 
 fi
 
+# configure for local installation
+if [[ "$LOCAL" == true ]]; then
+    SCOPE="--local"
+    cd "$REPOSITORY_DIR"
+    if [[ $? != 0 ]]; then
+        ( >&2 echo "install: $REPOSITORY_DIR does not exist, aborting" )
+        exit 1
+
+    fi
+
+fi
+
 # install the project filter
 git config "$SCOPE" filter.cadsoft_eagle_project.clean "$FILTER_PROJECT_CLEAN"
-
 if [[ $? != 0 ]]; then
+    ( >&2 echo "install: git configuration failed, aborting" )
     exit 1
+
+fi
+
+# cleanup
+if [[ "$LOCAL" == true ]]; then
+    cd "$INITIAL_DIR"
+    if [[ $? != 0 ]]; then
+        ( >&2 echo "install: unable to return to initial directory, aborting" )
+        exit 1
+
+    fi
 
 fi
 
