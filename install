@@ -32,15 +32,15 @@ function display_help {
     echo "    --version"
     echo "        Display version."
     echo "    --global"
-    echo "        Write the attributes to the global git configuration file."
-    echo "    --local"
-    echo "        Write the attributes to the specified git repository's configuration"
-    echo "        file."
+    echo "        Write the attributes to the global (user) git configuration file."
+    echo "    --local <path>"
+    echo "        Write the attributes to a local (repository) git configuration file."
     echo
     echo "EXAMPLES"
     echo "    install --help"
     echo "    install --version"
     echo "    install --global"
+    echo "    install --local ~/projects/foo"
 }
 
 # script version
