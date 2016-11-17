@@ -72,7 +72,7 @@ while [[ $# -gt 0 ]]; do
 
         ;;
         --version)
-            echo "initialize: version $VERSION"
+            echo "install: version $VERSION"
             exit 0
 
         ;;
