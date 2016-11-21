@@ -4,7 +4,7 @@ control.
 
 ## Obtaining the Source Code
 ```
-git clone
+git clone https://github.com/apcountryman/cadsoft_eagle_git_attributes.git
 ```
 
 ## Dependencies
