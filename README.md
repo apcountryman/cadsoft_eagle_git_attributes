@@ -7,6 +7,35 @@ control.
 git clone
 ```
 
+## Dependencies
+
+### Installation
+- bash (required)
+
+### Runtime
+- sed (required)
+
+## Usage and Features
+
+### Installation
+Installation is performed via the `install` script. See `$ install --help` for details.
+Installation sets up the attributes in the repository's/user's git configuration but does
+not activate them. See the individual feature descriptions for activation instructions.
+
+### Project File Filter
+The project file filter is designed to strip everything except the `Eagle` and `Globals`
+sections from EAGLE project files (`eagle.epf`). Additionally, the project file filter
+strips everything from the `EAGLE` section except the `Version` and `Globals` fields.
+
+To enable the project file filter, add the following line to the git attributes file at
+the same scope that the installation was performed.
+```
+eagle.epf filter=cadsoft_eagle_project
+```
+See the
+[gitattributes documentation](https://git-scm.com/docs/gitattributes#_description) for
+details regarding which git attributes file should be used.
+
 ## git Hooks
 To install this repository's git hooks, run the `install` script which is located in the
 `hooks` directory.
